@@ -1,4 +1,4 @@
-\documentclass{journal}
+\documentclass{report}
 
 % Packages
 \usepackage[utf8]{inputenc}
@@ -24,13 +24,13 @@
 
 \section{Introduction}
 
-Understanding how myriad networks of the brain contribute to decision-making remains an important, long-term goal of neuroscience. Two major issues exist in accomplishing this: One part regards a need to catalogue the different network interactions, the interactions who are at times part of the set of activity helping to map a certain tier of stimuli into a certain tier of action. The secont part regards local dynamics, and is more an issue I am concerned with in this report, creating a model to understand it. \fontit{How} do high-dimensional, mixed-selective ensembles fire and communicate during decisions? How can they communicate in a way conducive to representing mixed-selective activity for a decision? ... activity needed to map an action.
+Understanding how myriad networks of the brain contribute to something as complex as a decision remains an important, future scientific goal. Two major issues exist in accomplishing it: One part regards a need to catalogue the different network interactions, the interactions who shape the subset of total neural activity mapping a certain tier of stimuli into a certain tier of action. The secont part regards local dynamics, and is more an issue I am concerned with in this report, using a model network to better understand. How do high-dimensional, mixed-selective ensembles interact and represent during decisions? What sort of network properties allow the representation of decision-related variables? ...variables needed to map an action.
 
-One excellent place to see this circuit-scale phenomena is the prefrontal cortex. Few places in the brain exhibit the sheer multimodality and mixed selectivity of prefrontal cells. It has been called the ``prefrontal zoo''. Any signal relating to potentially behaviorally relevant information \footnote{\textit{especially} behaviorally relevent!} can be found there---sensory, motor, limbic, and even visceral (oribitofrontally) \cite{fuster_prefrontal_2015}.
+One excellent place to study this circuit-scale phenomena is the prefrontal cortex. Few places in the brain exhibit the sheer cosmopolitan multimodality and mixed selectivity of prefrontal cells. It has been called the ``prefrontal zoo''. Any signal relating to potentially behaviorally relevant information \footnote{\textit{especially} behaviorally relevent!} can be found there---sensory, motor, limbic, and even visceral (oribitofrontally) \cite{fuster_prefrontal_2015}.
 
-One experimental model attempting to free signal from this noisey territory was carried out by Mante and colleagues \cite{mante_context-dependent_2013}. They taught monkeys a simple context-dependent task, in which two contexts were given; in one, the monkeys were to pay attention to the motion of dots and not color, saccading toward the dot motion, and the other they were to pay attention to the color, saccading according to a color rule, left red, right green\ref{fig:}. The decision-dynamics took very interesting forms \ref{fig:attractor}.
+The influential experiment inspiring the model in this report came from Mante and colleagues \cite{mante_context-dependent_2013}. They attempted to rein signals from noise using an array of electrodes and monkey doing a simple context-dependent task. The task had two contexts; in one, the monkeys were to pay attention to the motion of dots and not color, saccading toward the dot motion, and the other they were to pay attention to the color, saccading according to a color rule, left red, right green\ref{fig:}. The decision-dynamics took very interesting forms seemingly involving attractor state dynamics \ref{fig:attractor}.
 
-This is the task I am studying in this report, with a model. Mante and colleagues also tried a different model, but what primarily plagues it is its extreme unrealisim. They used a recently developed system, based on FORCE learning \cite{ABBOTT}, to teach a network of randomly wired cells to produce the exact output of the cellular data, given task inputs. 
+This is the task I am studying in this report, with a model. Mante and colleagues also tried a different model, but what primarily plagues it is its extreme unrealisim. They used a recently developed system, based on FORCE learning \cite{sussillo_generating_2009}, to teach a network of randomly wired cells to produce the exact output of the cellular data, given task inputs.  lesson learned early in computing and electronics, can be summarized by 
 
 First of all, they took this large array of population data and sieved it through a special dimensionality reduction, one that finds the directions among the most highly explanatory PCA vectors which best correspond to task dimensions, and projects activity onto them. It appears that
 
@@ -41,6 +41,8 @@ First of all, they took this large array of population data and sieved it throug
 \end{figure}
 
 Models are certainly one way to try to understand data of this nature. And several theoretical advances have contributed to circuit models increasingly providing a footholds to ascend the lofty mountains, like this. 
+
+\section{The Model}
 
 One such advance \cite{tsodyks_paradoxical_1997} was realizing a natural regime for neurons to stably fire in groups, utilizing strong (often more diffusely sourced) inhibitory currents, with an even stronger, local excitatory recurrence. And another, autoassociative networks, further back, in the 80s \cite{hopfield_neural_1982}; this network explained succintly how ensembles with strong self-interactions could retain something like a memory of a pattern, replaying whole patterns from parts, and by decending towards low-energy states separating patterns into different ``valleys'' of activity.
 
