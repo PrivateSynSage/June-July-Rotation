@@ -7,7 +7,8 @@
 \usepackage{subcaption}
 \usepackage[]{graphicx}
 \usepackage{natbib}
-\usepackage{newpxtext,newpxmath}
+\usepackage[default]{gfsbodoni}
+% \usepackage{newpxtext,newpxmath}
 
 % Meta information
 \title{June/July Rotation}
@@ -31,7 +32,7 @@ Itinerant, multi-stable networks constitute an interesting class of networks cap
 
 \section{Introduction}
 
-In 2013, Mante and colleagues conducted a now widely-known, interesting experiment, to better understand prefrontal computation. They looked at state space signals from a network involved in making decisions during eye saccade. Using an array of electrodes and monkeys doing a simple context-dependent task, they recorded FEF cells, most of whom had mixed information about stimuli and choice. The task had two contexts; in one, monkeys were to pay attention to the motion of dots and not color, saccading toward the dot motion, after a delay period. In the second context, they were to pay attention to the color, not the motion, saccading according to a rule, “left green, right red”\ref{fig:task}. The dynamics were then cast into a task-relevent, PCA-derived, state space. \ref{fig:attractor}.
+In 2013, Mante and colleagues conducted a now widely-known, interesting experiment, to better understand prefrontal computation. They looked at state space signals from a network involved in making decisions during eye saccade. Using an array of electrodes and monkeys doing a simple context-dependent task, they recorded FEF cells, most of whom had mixed information about stimuli and choice. The task had two contexts; in one, monkeys were to pay attention to the motion of dots and not color, saccading toward the dot motion, after a delay period. In the second context, they were to pay attention to the color, not the motion, saccading according to a rule, ``left green, right red''\ref{fig:task}. The dynamics were then cast into a task-relevent, PCA-derived, state space. \ref{fig:attractor}.
 
 In the state space, 100 ms after context and stimuli begin, prefrontal ensembles appear to represent all these task variables and do not seem to filter out---nor receive a filtered out copy of stimuli from posterior cortex---contextually irrelevant data. During this presentation the network concomitantly and increasingly represents impending choice. Part ways to fully representing the choice and while the dot stimuli are still on, stimulus representations abate to near their starting value.
 
@@ -43,13 +44,14 @@ In the state space, 100 ms after context and stimuli begin, prefrontal ensembles
 
 \begin{figure}[h]
   \includegraphics[width=1\textwidth]{pic/datastatespace.png}
+  \includegraphics[width=1\textwidth]{pic/statespace2.png}
   \caption{State space, from Mante et al. 2013}
   \label{fig:attractor}
 \end{figure}
 
-Subsequently, they attempted to fit the data, using a network model, wired by FORCE learning, a trick developed in the last decade to get a randomly connected network to closely reproduce an output \cite{sussillo_generating_2009}. While the output fit well, as FORCE learning is designed to do, it is questionable whether the method actually wired a network implementation with biologic realism. The network wired under conditions that are highly unlikely be found in vivo; Unit-to-unit weights are rapidly tuned fast enough that error stay first order, at all time steps, and the network output remains close to desired output, sampling only tiny perturbations. Real networks do not rapidly quench error, and it would not be surprising if the output model did not tell you much about the brain’s implementation of decision-making. Subsequently they used this network and perturbation theory to try to understand how it mechanistically explains the biological data moving through state space.
+Subsequently, they attempted to fit the data, using a network model, wired by FORCE learning, a trick developed in the last decade to get a randomly connected network to closely reproduce an output \cite{sussillo_generating_2009}. While the output fit well, as FORCE learning is designed to do, it is questionable whether the method actually wired a network implementation with biologic realism. The network wired under conditions that are highly unlikely be found in vivo; Unit-to-unit weights are rapidly tuned fast enough that error stay first order, at all time steps, and the network output remains close to desired output, sampling only tiny perturbations. Real networks do not rapidly quench error, and it would not be surprising if the output model did not tell you much about the brain’s implementation of decision-making\footnote{This is suggested by a result of Moore in 1956: He showed \cite{church_moore_1956} the number of alternative internal mechanisms inside a black box constructed of elements, like circuits/automata, are infinite}. Subsequently they used this network and perturbation theory to try to understand how it mechanistically explains the biological data moving through state space.
 
-The network model built here attempts to mimic that data, instead, using an itinerant, multi-stable, inhibition-balanced network. Its three prominent characteristics have properties seen in biological networks. To represent stimuli, it utilizes discrete low-energy attractor states—much like discretized Hopfield net states\cite{hopfield_neural_1982}. It, second, utilizes an inhibitory-balance regime, as first described by Tsodyks et al.\cite{tsodyks_paradoxical_1997} and signs of whom are noticed in natural networks \cite{tsodyks_paradoxical_1997} \cite{csicsvari_reliability_1998} \cite{ozeki_inhibitory_2009}. In this regime, strong excitatory recurrence is balanced out by strong inhibition (often from more diffuse sources). Third, the network relies on synaptic depression or noise to kick it out of an existing state after some time and shift to another, with some history dependence to previous stimuli. \footnote{strength of history, too, depends on noise, which every so often can fork off some deterministic cycle of states, which can be a mechanism that helps to reproduce.} Indeed, what we seek to have the task with this type of model, and then probe its dynamics to hopefully say more about a local circuit decision dynamic.
+The network model built here attempts to mimic that data, instead, using an itinerant, multi-stable, inhibition-balanced network. Its three prominent characteristics endow properties seen in biological networks. It utilizes discrete low-energy attractor states--much like discretized Hopfield nets--to represent stimuli\cite{hopfield_neural_1982}. It, second, utilizes an inhibitory-balance regime: a connection paradigm with strong excitatory recurrence balanced by powerful inhibition (often from more diffuse sources). These, likewise, explain paradoxical qualities in natural networks \cite{tsodyks_paradoxical_1997} \cite{csicsvari_reliability_1998} \cite{ozeki_inhibitory_2009}. Third, the network relies on synaptic depression or noise to kick it out of an existing state after some time and shift to another, with some history dependence to previous stimuli. \footnote{strength of history, too, depends on noise, which every so often can fork off some deterministic cycle of states, which can be a mechanism that helps to reproduce.} Indeed, what we seek to have the task with this type of model, and then probe its dynamics to hopefully say more about a local circuit decision dynamic.
 
 \section{Methods}
 
@@ -65,17 +67,54 @@ Last but not least, the actual input itself. $I_j(t)$ tracks three major sources
 
 Three different stimuli were created, one for context $I_{c=1}^{app}(t) \in \{-1,1\}$, motion $I_{c=2}^{app}(t) \in \{-3,-2,...,3\}$, and color $I_{c=3}^{app}(t) \in \{-3,-2,...,3\}$. For each $I_{c}^{app}$, we select at random a fraction of neurons to receive that current. The amplitude strength and the sign opposite stimuli concepts. Two different regimes were tried to  treat ``opposites''. Onsets and offsets where modeled like in the Mante et al. work, except for the variable delay period, where here we make all trials 2 seconds long \ref{figure:input}A.
 
-In one regime, ``opposites''---dots left versus right, color red versus green---were handled with excitatory versus inhibitory current of that population. However, it was noticed because some stimuli combinations when randomly sampled were all strong negative currents, and the network fell silent \ref{figure:input}B. I re-gauged the interactino by instead choosing for opposite concepts two non-overlapping populations to receive an excitatory stimulus, both a small fraction, about 15\% of neural units.
+\begin{figure}[h]
+  \includegraphics[width=1\textwidth]{pic/stimuli.png}
+  \caption{Stimuli}
+  \label{fig:input}
+\end{figure}
 
-Because, each stimuli picked units at 
+In one regime, ``opposites''---dots left versus right, color red versus green---were handled with excitatory versus inhibitory current of that population. However, it was noticed because some stimuli combinations when randomly sampled were all strong negative currents, and the network could be kicked out of all attractor states or fail to shift states. I re-gauged the interaction in two ways: one by raising recurrence, lowering inhibition; the other by changing the representation of an opposite from inhibitory current into two non-overlapping populations who both receive excitatory stimulus, each  a small fraction, $15\%-25\%$ of units.
 
-There may well be a better stimulus than these, but I felt these were alright first approximations to try.
+Because, each stimuli picked units at random, this creates a situation where there is a $p_{frac}^2$ chance of unit selective for both stimuli, and a $p_{frac}^3$ chance for triple mixed-selectivity. For decision networks, previous work recognizes mixed selectivity as an important feature for learning complex choices\cite{fusi_why_2016}\cite{rigotti_internal_2010}.
+
+There may well be a better ways to embed the stimuli, but these are meant a first approximations attempt.
 
 \subsection{Connections}
 
+We assigned strong EI and IE connections, overall weights of $320$ and $-320$, respectively; each was scaled by the average number of neurons sending out a connection of that type, per neuron. So, if there is one I-neuron $N_i=1$, its weight to all E-neurons is $-320$. If however, $N_i=5$ then average weight cuts by $5$ to $-64$.
+
+We then progressively raise EE connections until units could be seen entering discrete attractor states, indicated by hot streaks across their firing rate rasters (Fig.\ref{}). Either to one of two levels were chosen (Fig \ref{}). \begin{enumerate} \item Discrete attractors only within the bounds of the trial, that reset after stimuli stop. \item Discrete attractors who often continue or itenerate in time between trials.\end{enumerate}
+
+We used two types of EE connections, reccurent connections and asymmetric. Recurrent connections took the form $W_{EE}^{i\rightarrow i}$ for excitatory groups connecting onto themselves\footnote{A more nuanced model of recurrence not implemented would be establishing groups of units who are considered a ``self'' and each set strongly connects within its ranks}. These connections were strong enough (among connected neurons who share stimuli) to locally overcome I-supression. Asymmetrics are EE, too, but weaker, who affect the form of attractors and encourage new attractor states and when recurrent synaptic activity depressed.
+
+Figure \ref{fig:connections} summarizes the typical connections expressed in a network instance. Not all runs had these exact weights, but the numbers remained quite close, and were varied to generate networks that would fire through the session, on only in a trial, and as well as varied for the two types of input.
+
+\begin{figure}[h]
+    
+    \caption{Connections}
+    \label{fig:overallinput}
+    \centering
+    \medskip
+    \small
+    Description
+\end{figure}
+
+
+In general, the input type that used negative current to represent an opposite requires a higher current to acheive firing in stable attractors. 
+
 \subsection{Neural Properties}
 
+
 \section{Results}
+
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.32\textwidth]{pic/al_undertrial.png}
+    \includegraphics[width=0.32\textwidth]{pic/al_overtrial.png}
+    \caption{Stimuli}
+    \label{fig:overallinput}
+\end{figure}
 
 \subsection{Network Tone}
 
