@@ -23,6 +23,8 @@
 \maketitle
 \clearpage
 
+\tableofcontents\clearpage
+
 \section{Abstract}
 
 Itinerant, multi-stable networks constitute an interesting class of networks capable of doing interesting tasks like counting, measuring duration, or intensity, even all at once\cite{miller_stimulus_2013}. Here, we wanted to investigate whether same network could account for some of the interesting network behavior noticed in by Mante et al. \cite{mante_context-dependent_2013}. To do so, we set up a simple firing rate network, and provided inputs that mimic the task. We then attempt to measure and observe the response with the same targeted dimensionality reduction technique.
@@ -57,16 +59,27 @@ To model the network, we use a continuous firing rate model. The variables track
 
 Included in that current $I_i(t)$ are the synaptic currents $S_i(t)$, who follow $$ \tau_s \frac{ds_i}{dt} = -s_i(t) +  \tilde{\alpha} p_0 r_i(t) \tau_s D_i(t).$$ The $\tilde{\alpha}$ (fraction of available binding sites) and $p_0$ (the base release probability) together determine the synaptic activity increase due to action potentials $r_i(t)\tau_s$. When further scaled by $D_i(t) \in [0,1]$ it creates a drop in $\frac{ds_i}{dt}$ for persistant firing. This scaling factor drops with firing, $$\tau_{Di}\frac{dD_i}{dt} = 1 - D_i(t) - p_0 r_i(t) \tau_{Di} D_i(t).$$
 
-Last but not least, the actual input itself. That follows three major sources of current, synaptic, applied current, and noise, who each get a term in the equation, $$ I_j(t) = \sum_i s_i(t)W_{i\rightarrow j} + I_j^{app}(t) + \sigma\eta(t). $$
+Last but not least, the actual input itself. $I_j(t)$ tracks three major sources of current---synaptic, applied current, and noise---who each get a term in the equation, $$ I_j(t) = \sum_i s_i(t)W_{i\rightarrow j} + I_j^{app}(t) + \sigma\eta(t). $$
 
 \subsection{Stimulus}
 
+Three different stimuli were created, one for context $I_{c=1}^{app}(t) \in \{-1,1\}$, motion $I_{c=2}^{app}(t) \in \{-3,-2,...,3\}$, and color $I_{c=3}^{app}(t) \in \{-3,-2,...,3\}$. For each $I_{c}^{app}$, we select at random a fraction of neurons to receive that current. The amplitude strength and the sign opposite stimuli concepts. Two different regimes were tried to  treat ``opposites''. Onsets and offsets where modeled like in the Mante et al. work, except for the variable delay period, where here we make all trials 2 seconds long \ref{figure:input}A.
+
+In one regime, ``opposites''---dots left versus right, color red versus green---were handled with excitatory versus inhibitory current of that population. However, it was noticed because some stimuli combinations when randomly sampled were all strong negative currents, and the network fell silent \ref{figure:input}B. I re-gauged the interactino by instead choosing for opposite concepts two non-overlapping populations to receive an excitatory stimulus, both a small fraction, about 15\% of neural units.
+
+Because, each stimuli picked units at 
+
+There may well be a better stimulus than these, but I felt these were alright first approximations to try.
 
 \subsection{Connections}
 
 \subsection{Neural Properties}
 
 \section{Results}
+
+\subsection{Network Tone}
+
+\subsection{}
 
 \section{Discussion}
 
