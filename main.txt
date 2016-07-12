@@ -9,6 +9,7 @@
 \usepackage{natbib}
 \usepackage[default]{gfsbodoni}
 % \usepackage{newpxtext,newpxmath}
+\usepackage{csvsimple}
 
 % Meta information
 \title{June/July Rotation}
@@ -83,42 +84,33 @@ There may well be a better ways to embed the stimuli, but these are meant a firs
 
 We assigned strong EI and IE connections, overall weights of $320$ and $-320$, respectively; each was scaled by the average number of neurons sending out a connection of that type, per neuron. So, if there is one I-neuron $N_i=1$, its weight to all E-neurons is $-320$. If however, $N_i=5$ then average weight cuts by $5$ to $-64$.
 
-We then progressively raise EE connections until units could be seen entering discrete attractor states, indicated by hot streaks across their firing rate rasters (Fig.\ref{}). Either to one of two levels were chosen (Fig \ref{}). \begin{enumerate} \item Discrete attractors only within the bounds of the trial, that reset after stimuli stop. \item Discrete attractors who often continue or itenerate in time between trials.\end{enumerate}
+We then progressively raise EE connections until units could be seen entering discrete attractor states, indicated by hot streaks across their firing rate rasters (Fig.\ref{fig:overunder}). Either to one of two levels were chosen. \begin{enumerate} \item Discrete attractors only within the bounds of the trial, that reset after stimuli stop (Fig \ref{fig:overunder}, left). \item Discrete attractors who often continue or itenerate in time between trials (Fig \ref{fig:overunder}, right).\end{enumerate}
 
-We used two types of EE connections, reccurent connections and asymmetric. Recurrent connections took the form $W_{EE}^{i\rightarrow i}$ for excitatory groups connecting onto themselves\footnote{A more nuanced model of recurrence not implemented would be establishing groups of units who are considered a ``self'' and each set strongly connects within its ranks}. These connections were strong enough (among connected neurons who share stimuli) to locally overcome I-supression. Asymmetrics are EE, too, but weaker, who affect the form of attractors and encourage new attractor states and when recurrent synaptic activity depressed.
+We used two types of EE connections, reccurent connections and asymmetric. Recurrent connections took the form $W_{EE}^{i\rightarrow i}$ for excitatory groups connecting onto themselves\footnote{A more nuanced model of recurrence not implemented would be establishing groups of units who are considered a ``self'' and each set strongly connects within its ranks}. These connections were strong enough (among connected neurons who share stimuli) to locally overcome I-supression. Asymmetrics are E-to-E as well, but weaker, who affect the form of attractors and encourage new attractor states and when recurrent synaptic activity depressed.
 
 Figure \ref{fig:connections} summarizes the typical connections expressed in a network instance. Not all runs had these exact weights, but the numbers remained quite close, and were varied to generate networks that would fire through the session, on only in a trial, and as well as varied for the two types of input.
 
 \begin{figure}[h]
-    
+    \includegraphics[width=1\textwidth]{pic/connections.png}
     \caption{Connections}
     \label{fig:overallinput}
-    \centering
-    \medskip
-    \small
-    Description
 \end{figure}
 
 
 In general, the input type that used negative current to represent an opposite requires a higher current to acheive firing in stable attractors. 
-
-\subsection{Neural Properties}
-
 
 \section{Results}
 
 
 
 \begin{figure}[h]
-    \includegraphics[width=0.32\textwidth]{pic/al_undertrial.png}
-    \includegraphics[width=0.32\textwidth]{pic/al_overtrial.png}
+    \includegraphics[width=0.5\textwidth]{pic/al_undertrial.png}
+    \includegraphics[width=0.5\textwidth]{pic/al_overtrial.png}
     \caption{Stimuli}
-    \label{fig:overallinput}
+    \label{fig:overunder}
 \end{figure}
 
 \subsection{Network Tone}
-
-\subsection{}
 
 \section{Discussion}
 
@@ -132,7 +124,16 @@ How networks of the brain pull off a decision at a circuit level remains a hard 
 \bibliographystyle{unsrt}
 \bibliography{Miller}
 
-
-
-
 \end{document}
+
+\begin{appendices}
+
+\section{Neural Properties}
+
+\begin{tabular}{l|c}%
+\bfseries Property & \bfseries Value% specify table head
+\csvreader[]{consts.csv}{}% use head of csv as column names
+%{\\\hline\givenname\ \name & \matriculation}% specify your coloumns here
+\end{tabular}
+
+\end{appendices}
