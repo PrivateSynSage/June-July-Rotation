@@ -10,6 +10,7 @@
 \usepackage[default]{gfsbodoni}
 % \usepackage{newpxtext,newpxmath}
 \usepackage{csvsimple}
+\usepackage[]{fixmath}
 %\usepackage[toc,page]{appendix}
 
 % Meta information
@@ -102,24 +103,84 @@ In general, the input type that used negative current to represent an opposite r
 
 \section{Results}
 
+\subsection{Tuning}
 
+To find proper network states, we looked for instantiations of the network that reacted to each stimulus, and who appeared to shift attractors within the trial. Patterns were sought where the predominant number of state shifts happened within a trial---those where a preponderance of states did not carry too long (see Fig. \ref{fig:badstates} left), nor seem too punctate (\ref{fig:badstates} left). The reasoning behind this: Mante et al.'s data suggested task population activity rose and dropped to zero within stimulus presentation\footnote{Their state space graph starts 100ms after dot onset and stops 100ms after offset.}
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{pic/long.png}
+    \includegraphics[width=0.5\textwidth]{pic/short.png}
+    \caption{Rejected Network Examples}
+    \label{fig:badstates}
+\end{figure}
+
+After exhaustively exploring a large parameter space (around 8000 different combinations of $W_{x}$ parameters), I settled on two types of network activity vis-a-vis two input types, mentioned above. It was not totally clear to me whether it was more important to have states contained in the trial or have a couple neurons carrying information between trials. But the guess was that memory property in the activity between states was only going to increase confusion in the network and act like a source of noise, because each trials stimuli were independently sampled, de novo.
 
 \begin{figure}[h]
     \includegraphics[width=0.5\textwidth]{pic/al_undertrial.png}
     \includegraphics[width=0.5\textwidth]{pic/al_overtrial.png}
-    \caption{Stimuli}
+    \caption{Accepted Network Examples}
     \label{fig:overunder}
 \end{figure}
 
-\subsection{Network Tone}
+\subsection{State Space: Targeted Dimensionality Reduction}
+
+To see if responses in networks resembled Mante data, I needed to see the activity in the same state space. Running between $50-400$ trials and $100-400$ units, the same ``Targeted Dimensionality Reduction'' was employed. 
+
+To do so, GLM was conducted, to predict population activity from task variables, $ F_i \beta_i = r_i$. This was done with $F_i$, a matrix describing stimuli presented each trial and solving the equation for each cell $i$ yielded coefficients $\beta_i$. From there, a denoising matrix $D$ was made using the 12 strongest PCA eignvectors. Whereon, we merge $\beta$s and apply the denoising matrix to a each condition-indexed page of an $N_{cell} \times N_{sample} \times N_{conditions}$ matrix. Last, QR orthogonalization recovers the axis components. The resulting vectors describe the directions in population activity that ``best''\footnote{at least in linear land} explain task aspects.
+
+Second, population averages had to be created for each particular condition found and then plotted, and separatelty, for averages for each triplicate condition permutation. So, for instance, an average of dot strength=3 trials encompassed an average of all trials with dot strength of 3, regardless of any other variables. For the permutation conditions, trials were collected only when they matched on all three trial variables, and population averaged. 
+
+These averages were projected onto the axes given above. State spaces varied \textit{consirably} on network instantiation, though for a certain parameter set, similar shapes often appeared. The state space also seemed loosely ranked at best across a condition axis for the different strengths. This ranking appeared to me to get slightly better with higher sample sizes, squinting, but I have yet to try anything about 500 trials. Spaces may have a clearer picture with higher sample size. There are 72 different stimulus combinations. So in order to sample all 72, 100 to 1000 times, it requires between 700-7000 trials. Above 800 trials, it crashed an 80GB RAM machine I attempted to SSH the job to. Clearly a higher sample size would be nice. But it might be irksome to breakup the model into smaller runnable chunks without a big data tool (hadoop) or space optomizing existing code. A simpler solution might just be to reduce the number of possible stimuli that can happen, in a session, and then combine results from sessions.
+
+Of the 2x2 categories of network types (within/between attractors, population/inhibition opposites) tested, state spaces appeared much tighter for the opposite-based opposites, and tended to be more decodable (see below). They more often appeared as sharp traces, shooting directly to an attractor state, sticking for the stimulus, and then returning sharply. Population-based stimulus seemed to increase the complexity in state space, with more curved, broad-stroke paths (perhaps a sign of more local attractors along the network path). Allowing long attractors bleeding over trials introduced more loop and copmlexity, and even created some seemingly heteroclinic paths, that looked like squares \ref{}. However, these models with activity crossing trials experience a large increase in their inability to read out a would-be choice from the activity (see next section). This may be due to the linear methods used for the read-out and also due to the LDA lacking information during training about past trials, needed to make sense of firing that persists from past trials.
+
+Unfortunately, none of the model curves exhibited a shape strongly resembling the bottom row of \ref{fig:statespace}. The closest seen is shown in Figure \ref{fig:closest}.
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{pic/al_undertrial.png}
+    \includegraphics[width=0.5\textwidth]{pic/al_overtrial.png}
+    \caption{Accepted Network Examples}
+    \label{fig:overunder}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{pic/al_undertrial.png}
+    \includegraphics[width=0.5\textwidth]{pic/al_overtrial.png}
+    \caption{Closest Model}
+    \small Also one of the runs with the highest sample size run
+    \label{fig:overunder}
+\end{figure}
+
+
+
+
+\subsection{Linear Discriminant Prediction}
+
+Because we had not figured out how to properly install a plastic choice network or learning rule, the question was simply asked, can a simple statistical classifier trained on the half the data set predict the would-be choice from the activity. Presumably, if a simple linear discrimant analysis can find predictive components, so too can a simple neural net reading out network activity. They have similar solution spaces\footnote{... energy function minmized to solve an LDA has a form similar to a perceptron.}.
+
+As alluded above, best predicted trails came from networks that didn't fire strongly between trials. Population and inhibition opposites worked similarly well for that network. The vast majority of sessions had fairly high predictability, 70\%, with some suprises mixed in. Asymmetric connections were randomly selected, occassionally producing networks who failed to transmit activity about the stimuli or times randomly sampled by the LDA failed to capture a brief, key moment that a attractor stored stimulus identity.
+
+Between trial networks did particularly bad, for a reason highlighted above: LDAs are trained with one trials worth of data per prediction, and perhaps lack the panopia of extra trials to predict clearly.
 
 \section{Discussion}
 
-\subsection{What the model may need} 
+\subsection{Choices?}
 
-How networks of the brain pull off a decision at a circuit level remains a hard scientific problem. An excellent domain to study this network phenomena is the prefrontal cortex. Few places in the brain exhibit the sheer cosmopolitan multimodality and mixed selectivity of prefrontal cells. It has been called the ``prefrontal zoo''. Any signal relating to potential behaviorally relevant information \footnote{\textit{especially} behaviorally relevent!} can be found there---sensory, motor, limbic, and even visceral (oribitofrontally) \cite{fuster_prefrontal_2015}.
+How to get the network to choose? One possible way is to create a separate network, and train/reward it for correct choice output based on this input network's input.
+
+Another more natural, perhaps internal way: have neurons capable of making a choice embedded in the network, randomly receiving connections from inputs. When a correct choice is made, do the network equivalent of diffuse dopamine release, rewarding recent stimulus histories with some decaying curve\cite{gomperts_vta_2015}.
+
+\subsection{What could the model need to better replicate state space?} 
+
+One thing mention that could help: a bigger trial size. This helps the GLM form a more accurate representation of the neurons involved in task variables.
+
+Second, state spaces trace out smoother arcs with, perhaps because of a greater number of attractors encountered when pushed towards the final attractor state. It might help to increase the number of heterostable states itenerated over within the stimulus window. Maybe that means increasing the synaptic depression and asymmetric weights.
+
 
 \section{Conclusion}
+
+How networks of the brain pull off a decision at in a circuit is a hard scientific problem. But it may be yet be solvable with more realistic models to help explain the complex dynamics seen. Here, we attempted more bioligcal plausible model of neural data and while the current implementation does not yet replicate Mante's data, some changes proposed may help in the future.
 
 
 \bibliographystyle{unsrt}
@@ -134,6 +195,16 @@ How networks of the brain pull off a decision at a circuit level remains a hard 
 \csvreader[head to column names]{csv/consts.csv}{}% use head of csv as column names
 {\\\hline \constants & \value}%
 \end{tabular}
+
+\section{Typical Input Pattern Within a Session}
+
+Figure summarizing on the right input sources within a set of trials and on the left, input averaged across neurons.
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{pic/InputSep.png}
+    
+\end{figure}
+
 
 \end{appendices}
 
