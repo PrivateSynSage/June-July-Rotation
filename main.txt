@@ -3,13 +3,14 @@
 % Packages
 \usepackage[utf8]{inputenc}
 \usepackage{microtype}
-\usepackage[page]{appendix}
+\usepackage[toc,page]{appendix}
 \usepackage{subcaption}
 \usepackage[]{graphicx}
 \usepackage{natbib}
 \usepackage[default]{gfsbodoni}
 % \usepackage{newpxtext,newpxmath}
 \usepackage{csvsimple}
+%\usepackage[toc,page]{appendix}
 
 % Meta information
 \title{June/July Rotation}
@@ -93,7 +94,7 @@ Figure \ref{fig:connections} summarizes the typical connections expressed in a n
 \begin{figure}[h]
     \includegraphics[width=1\textwidth]{pic/connections.png}
     \caption{Connections}
-    \label{fig:overallinput}
+    \label{fig:connections}
 \end{figure}
 
 
@@ -124,16 +125,16 @@ How networks of the brain pull off a decision at a circuit level remains a hard 
 \bibliographystyle{unsrt}
 \bibliography{Miller}
 
-\end{document}
-
 \begin{appendices}
 
-\section{Neural Properties}
+\section{More Exhaustive (Typical) Properties}
 
 \begin{tabular}{l|c}%
 \bfseries Property & \bfseries Value% specify table head
-\csvreader[]{consts.csv}{}% use head of csv as column names
-%{\\\hline\givenname\ \name & \matriculation}% specify your coloumns here
+\csvreader[head to column names]{csv/consts.csv}{}% use head of csv as column names
+{\\\hline \constants & \value}%
 \end{tabular}
 
 \end{appendices}
+
+\end{document}
